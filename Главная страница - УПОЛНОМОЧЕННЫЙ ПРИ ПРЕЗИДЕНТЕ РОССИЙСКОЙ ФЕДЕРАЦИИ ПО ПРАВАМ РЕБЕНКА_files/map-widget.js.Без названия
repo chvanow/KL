@@ -1,0 +1,30 @@
+/**
+ * Created by zima on 22.09.2021.
+ */
+
+function isMobile() {
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        return true;
+    }
+    return false;
+}
+
+function iframeInit() {
+    let iframe = $('#iframeMap');
+    let src = iframe.data('src');
+    if(isMobile()) {
+        let height = window.screen.height;
+        let width = window.screen.width;
+        iframe.attr('height', height);
+        iframe.attr('width', width);
+
+        let section = $('#nav-map');
+        section.find('.mapz__maps').css('height', 'auto');
+
+        src += '&drag=0';
+    }
+
+    iframe.attr('src', src);
+}
+
+iframeInit();
