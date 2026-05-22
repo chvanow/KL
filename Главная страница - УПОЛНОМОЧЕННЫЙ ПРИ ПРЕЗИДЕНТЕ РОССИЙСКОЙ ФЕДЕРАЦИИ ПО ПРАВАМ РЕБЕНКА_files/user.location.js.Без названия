@@ -1,0 +1,62 @@
+/**
+ * Created by Zima on 23.10.2019.
+ */
+
+(function ($) {
+    $(window).on('user.location.save', function () {
+        // set user location for back-end if not set
+        if (!Cookies.get('userLocation')) {
+            saveUserLocation(
+                location.point,
+                location.city,
+                location.country,
+                location.address,
+                false
+            );
+        }
+    });
+
+    //save user location on page load
+    if (window.mapController.getUserLocation()) {
+        $(window).trigger('user.location.save');
+    }
+
+    $(window).on('update.map', function () {
+        if (!window.mapController.getUserLocation()) {
+            /*
+            if (navigator.geolocation) {
+                console.log("Geolocation is supported by this browser.");
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+            */
+            window.mapController.findMe();
+        }
+    });
+
+    /**
+     *
+     * @param {Array} coords
+     * @param {String} city
+     * @param {String} country
+     * @param {String} address
+     * @param {boolean} sure
+     * @returns {*}
+     */
+    function saveUserLocation(coords, city, country, address, sure) {
+        // save user location for backend
+        return $.ajax({
+            url: '/cabinet/user-location/save',
+            type: 'GET',
+            data: {
+                point: coords,
+                city: city,
+                country: country,
+                address: address,
+                sure: sure ? 1 : 0
+            },
+            dataType: 'JSON',
+            cache: false
+        });
+    }
+})(jQuery);

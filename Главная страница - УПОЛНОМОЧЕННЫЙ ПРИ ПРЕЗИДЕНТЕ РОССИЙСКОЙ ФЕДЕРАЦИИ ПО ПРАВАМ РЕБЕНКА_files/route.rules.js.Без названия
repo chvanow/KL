@@ -1,0 +1,363 @@
+(function ($) {
+    function checkState(route, layer) {
+        if (!layer) {
+            layer = $('body');
+        }
+        var defer = new $.Deferred(function () {
+            // wait init
+            if (layer.data('init') !== true) {
+                var fakeInterval = setInterval(function () {
+                    if (layer.data('init') === true) {
+                        clearInterval(fakeInterval);
+                        defer.resolve(route);
+                    }
+                }, 100);
+            }
+        });
+
+        if (layer.data('init') === true) {
+            defer.resolve(route);
+        }
+
+        return defer;
+    }
+
+    Path.map("#soctv/tab/:tab(/)(page/:page)").to(function () {
+        setTimeout(function (params) {
+            $(window).trigger('soctv.tab.page', [
+                params['tab'],
+                params['page']
+            ])
+        }, 100, this.params);
+    });
+
+    Path.map("#soctv/video/:id").to(function () {
+        setTimeout(function (params) {
+            $(window).trigger('soctv.modal', [
+                params['id']
+            ]);
+        }, 100, this.params);
+    });
+
+    Path.map("#soctv/tag/:id").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('soctv.filter.tag', [
+                that.params.id,
+            ]);
+        });
+    });
+
+    Path.map("#cloud(/tab/:tab)(/tag/:tag)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('cloud.load', [
+                1,
+                that.params.tab,
+                that.params.tag,
+            ])
+        });
+    });
+
+    Path.map("#cloud(/tab/:tab)(/page/:page)(/tag/:tag)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('cloud.load', [
+                that.params.page,
+                that.params.tab,
+                that.params.tag,
+            ])
+        });
+    });
+
+    Path.map("#photo(/tag/:tag)(/page/:page)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('photo.page', [
+                that.params.tag,
+                that.params.page
+            ])
+        });
+    });
+
+    Path.map("#photo(/page/:page)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('photo.load.page', [
+                that.params.page
+            ])
+        });
+    });
+
+    Path.map("#nav-services(/page/:page)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('nav.services.page', [
+                that.params.page
+            ]);
+        });
+    });
+
+    Path.map("#subordinate-services(/page/:page)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('subordinate.services.page', [
+                that.params.page
+            ]);
+        });
+    });
+
+    Path.map("#nko-services(/page/:page)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('nko.services.page', [
+                that.params.page
+            ]);
+        });
+    });
+
+    Path.map("#news(/tab/:tab)").to(function () {
+        var that = this;
+        //debugger
+        checkState(this).then(function () {
+            $(window).trigger('news.load', [
+                that.params.tab,
+                null,
+                null,
+            ])
+        });
+    });
+
+    Path.map("#news/tag/:tag").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('news.load', [
+                null,
+                null,
+                that.params.tag,
+            ])
+        });
+    });
+
+    Path.map("#news/region/:region").to(function () {
+        checkState(this).then(() => {
+            $(window).trigger('news.load', [
+                null,
+                null,
+                null,
+                this.params.region || null
+            ])
+        });
+    });
+
+    Path.map("#news(/tab/:tab)(/tag/:tag)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('news.load', [
+                that.params.tab,
+                null,
+                that.params.tag,
+            ])
+        });
+    });
+
+    Path.map("#news(/tab/:tab)(/page/:page)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('news.load', [
+                that.params.tab,
+                that.params.page,
+                null,
+            ])
+        });
+    });
+
+    Path.map("#news(/tab/:tab)(/page/:page)(/tag/:tag)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            $(window).trigger('news.load', [
+                that.params.tab,
+                that.params.page,
+                that.params.tag,
+            ])
+        });
+    });
+
+    Path.map("#subordinate/region/:region").to(function () {
+        checkState(this).then(() => {
+            $(window).trigger('subordinate.load', [
+                this.params.region || null
+            ])
+        });
+    });
+
+    Path.map("#event(/mode/:mode)").to(function () {
+        var that = this;
+        checkState(this).then(function () {
+            setTimeout(function () {
+                $(window).trigger('event.load.page', [
+                    1,
+                    that.params.mode,
+                ])
+            }, 500)
+
+        });
+    });
+
+    Path.map("#event(/page/:page)").to(function () {
+        var that = this;
+
+        checkState(this).then(function () {
+            setTimeout(function () {
+                $(window).trigger('event.load.page', [
+                    that.params.page
+                ])
+            }, 500)
+
+        });
+    });
+
+    Path.map("#event(/page/:page)(/mode/:mode)").to(function () {
+        var that = this;
+
+        checkState(this).then(function () {
+            setTimeout(function () {
+                $(window).trigger('event.load.page', [
+                    that.params.page,
+                    that.params.mode,
+                ])
+            }, 500)
+
+        });
+    });
+
+    Path.map("#event-md(/page/:page)").to(function () {
+        var that = this;
+        window.mapController.ready().then(function () {
+            checkState(this).then(function () {
+                $(window).trigger('event.load.page', [
+                    that.params.page
+                ])
+            });
+        });
+    });
+
+    Path.map("#service-orgs(/page/:page)").to(function () {
+        var that = this;
+        window.mapController.ready().then(function () {
+            checkState(this).then(function () {
+                $(window).trigger('org.services.page', [
+                    that.params.page
+                ])
+            });
+        });
+    });
+
+    //navigator map routes
+    Path.map("#nav-map").to(function () {
+        console.log('#nav-map');
+        window.mapController.ready().then(function () {
+            checkState(this).then(function () {
+                $(window).trigger('navigator--map');
+            });
+        });
+    });
+
+    Path.map("#nav-map-full").to(function () {
+        console.log('#nav-map-full');
+        window.mapController.ready().then(function () {
+            $(window).trigger('navigator--map-full');
+        });
+    });
+
+    Path.map("#nav-map/mode/srv/category/:category(/service/:service)").to(function () {
+        console.log("#nav-map/mode/srv/category/:category(/service/:service)");
+        var that = this;
+
+        window.mapController.ready().then(function () {
+            checkState(this).then(function () {
+                $(window).trigger('navigator.map.init', [
+                    function () {
+                        $(window).trigger('navigator.map.srv', [
+                            that.params.category,
+                            that.params.service,
+                        ]);
+                    }
+                ]);
+            });
+        });
+    });
+
+    Path.map("#nav-map/mode/org(/orgtype/:orgtype)").to(function () {
+        console.log('#nav-map/mode/org/orgtype/:orgtype');
+        var that = this;
+
+        window.mapController.ready().then(function () {
+            checkState(this).then(function () {
+                $(window).trigger('navigator.map.init', [
+                    function () {
+                        $(window).trigger('navigator.map.org', [
+                            that.params.orgtype
+                        ]);
+                    }
+                ]);
+            });
+        });
+    });
+
+    Path.map("#nav-map/mode/dct(/district/:district)(/area/:area)").to(function () {
+        console.log('#nav-map/mode/dct/district/:district(/area/:area');
+        var that = this;
+
+        window.mapController.ready().then(function () {
+            checkState(this).then(function () {
+                $(window).trigger('navigator.map.init', [
+                    function () {
+                        $(window).trigger('navigator.map.district.area', [
+                            that.params.district,
+                            that.params.area
+                        ]);
+                    }
+                ]);
+            });
+        });
+    });
+
+    Path.map("#nav-map/mode/:mode/(type/:type)(/card/:card)").to(function () {
+        console.log('#nav-map/mode/:mode/(type/:type)(/card/:card)');
+        var that = this;
+
+        window.mapController.ready().then(function () {
+            $(window).trigger('navigator.map.init', [
+                function () {
+                    $(window).trigger('navigator.map.card', [
+                        that.params.mode,
+                        that.params.type,
+                        that.params.card,
+                        true
+                    ]);
+                }
+            ]);
+        });
+    });
+
+    Path.map("#nav-map/mode/:mode/lat/:lat/lng/:lng").to(function () {
+        console.log('#nav-map/mode/:mode/lat/:lat/lng/:lng');
+        var that = this;
+
+        window.mapController.ready().then(function () {
+            $(window).trigger('navigator.map.init', [
+                function () {
+                    $(window).trigger('navigator.map.coords', [
+                        that.params.mode,
+                        {lat: that.params.lat, lng: that.params.lng},
+                        true
+                    ]);
+                }
+            ]);
+        });
+    });
+
+    Path.listen();
+
+})(jQuery);

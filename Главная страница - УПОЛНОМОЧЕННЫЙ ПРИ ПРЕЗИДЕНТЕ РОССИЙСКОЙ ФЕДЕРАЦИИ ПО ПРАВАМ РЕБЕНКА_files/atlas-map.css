@@ -1,0 +1,198 @@
+.map-wrap {
+    position: relative;
+}
+
+.map-wrap #info-wind {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(43, 55, 84, 0.3);
+    z-index: 1070;
+}
+
+.map-wrap #info-wind.active {
+    display: block;
+}
+
+.map-wrap #info-wind .info-wind__wrap {
+    visibility: hidden;
+    opacity: 0;
+    border-radius: 12px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 100%;
+    max-width: 900px;
+    padding: 20px 24px 24px;
+    background-color: #ffffff;
+    -webkit-box-shadow: 0 3px 30px 0px rgb(1 46 154 / 15%);
+    box-shadow: 0 3px 30px 0px rgb(1 46 154 / 15%);
+    -webkit-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(-50%);
+}
+
+.map-wrap #info-wind .info-wind__wrap.active {
+    visibility: visible;
+    opacity: 1;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.map-wrap #info-wind .wind-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.map-wrap #info-wind .info-wind__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #D0D3D9;
+    margin-bottom: 10px;
+}
+
+.map-wrap #info-wind .wind-sub {
+    font-weight: 500;
+    margin-top: 20px;
+}
+
+.map-wrap #info-wind .wind-link {
+    margin-top: 30px;
+    min-width: 250px;
+}
+
+.map-wrap #info-wind .close {
+    position: relative;
+}
+
+.map-wrap #info-wind .wind-name {
+    padding-right: 25px;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: calc(16px + 6 * (100vw - 320px) / 880);
+}
+
+.map-wrap #info-wind .contacts {
+    font-weight: 400;
+    font-size: calc(14px + 4 * (100vw - 320px) / 880);
+}
+
+.map-wrap #info-wind .contacts__wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.map-wrap #info-wind .contacts h3 {
+    margin-bottom: 15px;
+}
+
+.map-wrap #info-wind .soc-center__phone__wrap {
+    gap: 10px;
+}
+
+.map-wrap #info-wind .contacts label {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #717A8D;
+}
+
+.map-wrap #info-wind a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-transform: uppercase;
+}
+
+.soc-center__mail a {
+    font-weight: 400 !important;
+    text-transform: lowercase !important;
+}
+
+.map-wrap #info-wind .get-page {
+    font-weight: 600;
+}
+
+.map-wrap #info-wind .card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #E7E9EC;
+    border-radius: 12px;
+}
+
+.map-wrap #info-wind .card-title {
+    margin-bottom: 15px;
+}
+
+.map-wrap #info-wind .card__img {
+    width: 96px;
+    flex: 0 0 96px;
+    height: 96px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F3F6FA;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.map-wrap #info-wind .card__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.map-wrap #info-wind .card__name,
+.map-wrap #info-wind .card__name h3 {
+    margin: 0;
+    font-size: calc(18px + 4 * (100vw - 320px) / 1000);
+}
+
+.map-wrap #info-wind .card .card__content {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.map-wrap #info-wind .card .btn {
+    width: max-content;
+    margin-top: auto;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+    .map-wrap #info-wind .info-wind__wrap {
+        padding: 25px 50px 50px;
+    }
+    .map-wrap #info-wind .card {
+        min-height: 320px;
+    }
+    .map-wrap #info-wind .card .btn {
+        padding: 16px 25px;
+    }
+    .map-wrap #info-wind .info-wind__top {
+        margin-bottom: 24px;
+    }
+    .map-wrap #info-wind .contacts__wrap {
+        gap: 10px;
+    }
+    .map-wrap #info-wind .card {
+        padding: 30px;
+    }
+}

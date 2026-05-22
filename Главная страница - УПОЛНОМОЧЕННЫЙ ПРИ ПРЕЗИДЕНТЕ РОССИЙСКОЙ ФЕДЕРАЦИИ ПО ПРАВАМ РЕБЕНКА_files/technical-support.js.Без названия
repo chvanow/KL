@@ -1,0 +1,108 @@
+$(function () {
+    if ($("input.js-date").length > 0) {
+        $(window).on('resize load', function () {
+            $('input.js-date').Zebra_DatePicker({
+                view: 'years',
+                direction: false,
+                open_icon_only: true,
+                readonly_element: false,
+                format: "d.m.Y",
+                show_clear_date: true,
+            });
+        });
+    }
+
+    // разрешаю
+    $('#technicalSupportInputDeal').change(function () {
+        if ($(this).prop('checked') === true) {
+            $('#technicalSupportFormBtnSubmit').prop('disabled', false);
+        }
+        else {
+            $('#technicalSupportFormBtnSubmit').prop('disabled', true);
+        }
+    });
+
+    function resetForm(form){
+        form.get(0).reset();
+        form.find(':checkbox').trigger('refresh');
+        form.find('.form-group--placeholder-fix').removeClass('full');
+
+        form.find('.error-message').hide();
+        form.find('.error-summary').remove();
+        $('#technicalSupportFormBtnSubmit').prop('disabled', true);
+    }
+
+    $('#technicalSupportForm').validate({
+        // добавляем класс к обертке у элементов формы при валидации
+        highlight: function (element, errorClass, validClass) {
+            return false;
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            return false;
+        },
+        // выводим сообщение в шапку формы о наличии ошибок
+        invalidHandler: function (event, validator) {
+            // 'this' refers to the form
+            var errors = validator.numberOfInvalids();
+            if (errors) {
+                var message = 'Проверьте, пожалуйста, правильность заполнения формы.';
+                $(this).find("div.error-message").html(message);
+                $(this).find("div.error-message").show();
+            } else {
+                $(this).find("div.error-message").hide();
+            }
+        },
+        rules: {
+            "TechnicalSupport[name]": {
+                required: true
+            },
+            "TechnicalSupport[nameMiddle]": {
+                required: true
+            },
+            "TechnicalSupport[nameLast]": {
+                required: true
+            },
+            "TechnicalSupport[birthDate]": {
+                required: true
+            },
+            "TechnicalSupport[email]": {
+                required: true,
+                is_email: true
+            },
+            "TechnicalSupport[comment]": {
+                required: true
+            }
+        },
+        submitHandler: function (form, e) {
+            e.preventDefault();
+            $.ajax({
+                url: $(form).attr('action'),
+                type: 'POST',
+                dataType: 'JSON',
+                data: $(form).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        resetForm($(form));
+                        $('.modal').modal('hide');
+                        $('#modalOk').modal();
+                    } else if (data.errors) {
+                        var summary = '';
+                        for (var i in data.errors) {
+                            if (data.errors.hasOwnProperty(i)) {
+                                if (i === 'verifyCode') {
+                                    $(form).find('.captcha-image').trigger('click');
+                                }
+                                summary += '<span class="error">' + data.errors[i].join('<br>') + '</span><br>';
+                            }
+                        }
+                        $(form).find('.error-message').html('');
+                        $(form).find('.error-message').text('Проверьте, пожалуйста, правильность заполнения формы.').show().after(
+                            '<div class="error-summary">' + summary + '</div>'
+                        );
+                    }
+                }
+            });
+        }
+    });
+
+});

@@ -1,0 +1,240 @@
+/**
+ * Created by zima on 29.07.2022.
+ */
+
+(function ($) {
+    let map = {
+            containerMap: null,
+            vectorMap: null,
+            options: null,
+            data: null,
+            style: null,
+            popup: null,
+            _bubble: null,
+            _scale: null,
+            _width: null,
+            init: function () {
+                let elementMap = document.getElementById('map-svg');
+                this.containerMap = $(elementMap);
+                this.popup = $('#info-wind');
+
+                window.atlas.init();
+                window.atlas.ready().then(function () {
+                    map.data = window.atlas.data;
+                    map.prepare(window.atlas.options);
+                    map.vectorMap = vectorMap(elementMap, map.options);
+                    map.tune();
+                    map.initHandlers();
+                });
+            },
+            resize: function () {
+                map.vectorMap.do_resize();
+                map.containerMap.css('height', map.containerMap.width() * map.options.svg_height / map.options.svg_width);
+            },
+            initHandlers: function () {
+                $(window).on('resize', function () {
+                    map.resize();
+                });
+
+                $(window).on('map.force.init', function () {
+                    map.init();
+                });
+
+                map.popup.find('.close').on('click', function () {
+                    if (map.vectorMap.select_item) {
+                        map.vectorMap.select_item.classList.remove('active');
+                        $('body').css('overflow-y', 'auto');
+                        $('body').css('padding-right', '0');
+                        map.popup.find('.info-wind__wrap').removeClass('active');
+                        setTimeout(() => {
+                            $('body').removeClass('modal-open');
+                        },100)
+                    }
+                    map.popup.removeClass('active');
+                });
+                map.popup.on('click', function (event) {
+                    if(event.target.id=="info-wind"){
+                        if (map.vectorMap.select_item) {
+                            map.vectorMap.select_item.classList.remove('active');
+                            $('body').css('overflow-y', 'auto');
+                            $('body').css('padding-right', '0');
+                            map.popup.find('.info-wind__wrap').removeClass('active');
+                            setTimeout(() => {
+                                $('body').removeClass('modal-open');
+                            },100)
+                        }
+                        map.popup.removeClass('active');
+                    }
+                });
+
+                $('.js-list-region').on('click', function (e) {
+                    e.preventDefault();
+                    let code = $(this).data('code');
+                    map.setActive(code);
+                })
+            },
+            prepare: function(options) {
+                this.style =  {
+                    CL1: '#BDCED8', // default stroke
+                    CL2: '#ECF1F4', // default bg
+                    CL3: '#3ADBB9', // hover stroke
+                    CL4: '#3ADBB9', // hover color
+                    CL5: '#BDCED8', // inactive stroke
+                    CL6: '#ECF1F4', // inactive color
+                    ST1: 1,
+                    ST2: 1
+                };
+
+                this.options = $.extend({}, options, {
+                    'color': this.style.CL2,
+                    'stroke': [this.style.CL1, this.style.ST1],
+                    'onTransform': map._onTransform
+                });
+
+                this._bubble = $('<div class="popover top" id="map-bubble"><div class="popover-content"><div class="regiontitle"></div></div></div>');
+                this._bubble.appendTo(document.body);
+
+                this._width = this.containerMap.width();
+                this.containerMap.css('height', this.containerMap.width() * this.options.svg_height / this.options.svg_width);
+            },
+            tune: function () {
+                map.vectorMap.addShadowStyle('black', map.options.shadow, map.options.shadow, Math.round(map.options.shadow * 0.8));
+                map.vectorMap.onTransform();
+
+                $(map.vectorMap.rootGroup).find(map._getPathTag()).each(function () {
+                    var code = this.id.split('_')[1];
+                    if (!(code in map.data) || !map.data[code].visittext) {
+                        this.setStroke(map.style.CL1, map.style.ST1 / map.vectorMap.scale).setFill(map.style.CL2);
+                    }
+                });
+
+                map.vectorMap.addBubble(map._bubble[0], {
+                    'mouseover': function (mouseCoords) {
+                        var code = this.id.split('_')[1];
+                        map.reorder(code);
+                        if (code in map.data) {
+                            map._bubble.show();
+                        } else {
+                            map._bubble.hide();
+                        }
+                    },
+                    'mousemove': function (mouseCoords) {
+                        var code = this.id.split('_')[1];
+                        if (code in map.data) {
+                            var x = mouseCoords.pageX - (map.data[code].image ? 80 : 25);
+                            map._bubble.css({'top': mouseCoords.pageY - 30 - map._bubble.height(), 'left': x});
+                        }
+                    },
+                    'click': function () {
+                        var code = this.id.split('_')[1];
+                        map.setActive(code);
+                    },
+                    'unhover': map._unhover
+                });
+
+                if (!map.vectorMap.hasTouch) {
+                    map.containerMap.bind('mouseleave', map._unhover);
+                }
+
+                map.vectorMap.makeDraggable();
+            },
+            reorder: function (code) {
+                if (map.vectorMap.active_item) {
+                    if (map.vectorMap.active_code in map.data && map.data[map.vectorMap.active_code].visittext) {
+                        map.vectorMap.active_item.setStroke(map.style.CL3, map.style.ST1 / map.vectorMap.scale).setFill(map.style.CL4);
+                    } else {
+                        map.vectorMap.active_item.setStroke(map.style.CL5, map.style.ST1 / map.vectorMap.scale).setFill(map.style.CL6);
+                    }
+                    if (map.vectorMap.canvas.mode === 'svg') {
+                        map.vectorMap.active_item.setAttribute('style', '');
+                    }
+                    map.vectorMap.active_item = null;
+                }
+
+                if (code && !(code in map.data) && window.console) {
+                    window.console.warn('unknown country: ' + code);
+                }
+                let regiontitle = map._bubble.find('.regiontitle');
+                if (code && code in map.data) {
+                    map.vectorMap.active_code = code;
+                    map.vectorMap.active_item = map.vectorMap.getPath(code);
+                    if (map.data[code].visittext) {
+                        if (map.vectorMap.canvas.mode === 'svg') {
+                            map.vectorMap.active_item.setAttribute('style', 'filter: url(#inner-shadow-' + map.vectorMap.index + ');');
+                        }
+                        map.vectorMap.active_item.setFill(map.style.CL2).setStroke(map.style.CL1, map.style.ST2 / map.vectorMap.scale);
+                    } else {
+                        map.vectorMap.active_item.setFill(map.style.CL4).setStroke(map.style.CL3, map.style.ST2 / map.vectorMap.scale);
+                    }
+                    map.vectorMap.rootGroup.appendChild(map.vectorMap.active_item);
+                    regiontitle.text(map.data[code].title);
+                } else {
+                    regiontitle.text('');
+                }
+            },
+            setActive: function(code) {
+                if (map.vectorMap.select_item) {
+                    map.vectorMap.select_item.classList.remove('active');
+                }
+                let url = $('#region-map').data('url');
+
+                let infoTitle = map.popup.find('.js-wind-name'),
+                    infoDescr = map.popup.find('.js-wind-descr'),
+                    infoButton = map.popup.find('.js-wind-button'),
+                    infoButtonTitle = map.popup.find('.js-wind-button-title');
+
+                $.getJSON(url, {
+                    code: code
+                }, function (json) {
+                    if(json.success){
+                        var region = json.data;
+                        if(!region.hidden){
+                            map.vectorMap.select_item = map.vectorMap.getPath(code);
+                            map.vectorMap.select_item.classList.add('active');
+
+                            if(region.hasLayer){
+                                infoTitle.html(region.title);
+                                infoDescr.html(region.description);
+                                var win = $(window);
+                                var xy = window.pageYOffset;
+                                map.popup.css('right', window.pageYOffset +'px');
+                                xy = window.pageXOffset;
+                                map.popup.css('bottom', window.pageXOffset +'px');
+                                map.popup.addClass('active');
+                                $('body').css('overflow-y', 'hidden');
+                                $('body').css('padding-right', '15px');
+                                $('body').addClass('modal-open');
+                                setTimeout(() => {
+                                    map.popup.find('.info-wind__wrap').addClass('active');
+                                },100)
+                            }
+                        }
+                    }else{
+                        console.log(json.message);
+                    }
+                });
+            },
+            _onTransform: function () {
+                if (map.vectorMap.scale !== map._scale) {
+                    var paths = $(map.vectorMap.rootGroup).find(map._getPathTag());
+                    for (var i = paths.length; i--;) {
+                        paths[i].setStroke(null, map.style.ST1 / map.vectorMap.scale);
+                    }
+                    map._scale = map.vectorMap.scale;
+                }
+                map._bubble.css('display', 'none');
+            },
+            _getPathTag: function () {
+                return map.vectorMap.canvas.mode === 'svg' ? 'path' : 'shape';
+            },
+            _unhover: function () {
+                map.reorder();
+                map._bubble.hide();
+            },
+        }
+
+        $(document).ready(function() {
+            map.init();
+        });
+})(jQuery);
+

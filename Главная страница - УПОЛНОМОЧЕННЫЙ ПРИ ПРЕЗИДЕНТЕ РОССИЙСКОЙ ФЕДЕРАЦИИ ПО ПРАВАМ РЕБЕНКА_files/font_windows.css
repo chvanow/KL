@@ -1,0 +1,39 @@
+/* @charset "utf-8"; */
+
+/*====================== Fonts Windows ======================*/
+
+/* @font-face {
+  font-family: 'GOSTUI2';
+  src: url('../fonts/windows/GOSTUI2.eot');
+  src: url('../fonts/windows/GOSTUI2.eot?#iefix') format('embedded-opentype'), url('../fonts/windows/GOSTUI2.woff') format('woff'), url('../fonts/windows/GOSTUI2.ttf') format('truetype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'GOSTUI2';
+  src: url('../fonts/windows/GOSTUI2-Medium.eot');
+  src: url('../fonts/windows/GOSTUI2-Medium.eot?#iefix') format('embedded-opentype'), url('../fonts/windows/GOSTUI2-Medium.woff') format('woff'), url('../fonts/windows/GOSTUI2-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+@font-face {
+  font-family: 'GOSTUI2';
+  src: url('../fonts/windows/GOSTUI2-Bold.eot');
+  src: url('../fonts/windows/GOSTUI2-Bold.eot?#iefix') format('embedded-opentype'), url('../fonts/windows/GOSTUI2-Bold.woff') format('woff'), url('../fonts/windows/GOSTUI2-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'ALS Sector';
+  src: local("ALS Sector"), url("../fonts/als/als_sector-bold.woff2") format("woff2"), url("../fonts/als/als_sector-bold.woff") format("woff"), url("../fonts/als/als_sector-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'ALS Sector';
+  src: local("ALS Sector"), url("../fonts/als/als_sector.woff2") format("woff2"), url("../fonts/als/als_sector.woff") format("woff"), url("../fonts/als/als_sector.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+body,
+body.windows {
+    font-family: 'GOSTUI2', "Helvetica Neue", Helvetica, Arial, sans-serif;
+} */
