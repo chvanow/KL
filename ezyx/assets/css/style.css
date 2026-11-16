@@ -1,0 +1,356 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Golos Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #E8F4F8 0%, #F5E8F0 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.pastel-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 20px 30px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.header h1 {
+    color: #444;
+    font-size: 28px;
+    font-weight: 300;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn, .btn-editor, .btn-export, .btn-pdf {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: filter 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-editor {
+    background: rgba(100, 180, 220, 0.5);
+    color: #333;
+}
+
+.btn-export {
+    background: rgba(150, 210, 150, 0.5);
+    color: #333;
+}
+
+.btn:hover {
+    filter: brightness(0.85);
+}
+
+.chart-container {
+    position: relative;
+    min-height: 800px;
+    padding: 40px;
+    overflow: hidden;
+}
+
+.org-chart {
+    position: relative;
+    min-height: 800px;
+}
+
+.no-data {
+    text-align: center;
+    padding: 100px 20px;
+    color: #666;
+}
+
+.no-data h2 {
+    margin-bottom: 15px;
+    color: #444;
+}
+
+.no-data a {
+    color: #64b4dc;
+    font-weight: 600;
+}
+
+.employee-card {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 220px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    color: #333;
+}
+
+.employee-card:hover {
+    background: rgba(200, 200, 200, 0.5);
+}
+
+.employee-card.has-photo {
+    min-height: 170px;
+    padding-top: 70px;
+}
+
+.employee-photo-top-left {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.employee-photo-top-left img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.employee-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.employee-position {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+}
+
+.card-modal {
+    display: none;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 250px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.card-modal.show {
+    opacity: 1;
+}
+
+.modal-card-content {
+    text-align: center;
+}
+
+.modal-card-content .employee-photo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.modal-card-content .employee-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-card-content h3 {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.modal-card-content .position {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.contact-info {
+    text-align: left;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.contact-item {
+    margin: 8px 0;
+    color: #555;
+    font-size: 14px;
+}
+
+.contact-item strong {
+    color: #333;
+}
+
+.connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.login-container h2 {
+    color: #444;
+    margin-bottom: 25px;
+    font-weight: 300;
+}
+
+.login-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.login-container .btn {
+    width: 100%;
+    background: rgba(100, 180, 220, 0.5);
+    color: #333;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.login-container .btn:hover {
+    filter: brightness(0.85);
+}
+
+.error {
+    background: rgba(255,0,0,0.15);
+    color: #900;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.back-link {
+    display: block;
+    margin-top: 20px;
+    color: #666;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: #333;
+}
+
+@media print {
+    .header, .btn-editor, .btn-export {
+        display: none;
+    }
+    
+    body {
+        background: white;
+    }
+    
+    .employee-card {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        color: #333;
+        page-break-inside: avoid;
+    }
+}
+
+.contact-item {
+    margin: 8px 0;
+    color: #555;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.contact-item:hover {
+    background: rgba(100, 180, 220, 0.2);
+}
+
+.copy-icon {
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.contact-item:hover .copy-icon {
+    opacity: 1;
+}
+
+.copy-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(100, 180, 220, 0.9);
+    color: #333;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.user-info {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    margin-right: 10px;
+    color: #333;
+}

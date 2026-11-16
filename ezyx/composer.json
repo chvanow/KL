@@ -1,0 +1,14 @@
+{
+    "config": {
+        "audit": {
+            "abandoned": "ignore"
+        },
+        "allow-plugins": {
+            "*": true
+        }
+    },
+    "require": {
+        "phpoffice/phpspreadsheet": "*",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}
